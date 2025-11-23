@@ -1,50 +1,67 @@
 name: Deploy to GitHub Pages
 
-# Löst den Workflow bei jedem Push in den master-Branch aus
 on:
+  # Löst den Workflow bei jedem Push in den master-Branch aus
   push:
     branches: [ master ]
+  # Ermöglicht das manuelle Starten des Workflows über den "Actions"-Tab
+  workflow_dispatch:
+
+# Berechtigungen für das GITHUB_TOKEN festlegen
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  deploy-to-github-pages:
-    # Führt den Job auf dem neuesten Ubuntu-Runner aus
+  build:
     runs-on: ubuntu-latest
-
-    # HINZUGEFÜGT: Berechtigungen für den Job festlegen
-    permissions:
-      contents: write # Erforderlich, um den gh-pages Branch zu erstellen/aktualisieren
-
     steps:
-      # 1. Code auschecken
-      - uses: actions/checkout@v4
-
-      # 2. .NET 8 SDK einrichten
+      - name: Checkout
+        uses: actions/checkout@v4
+      
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # 3. App veröffentlichen
       - name: Publish .NET Core Project
         run: dotnet publish MyWebsite/MyWebsite.csproj -c Release -o release --nologo
 
-      # 4. Basispfad für GitHub Pages anpassen
-      # Ersetzt den Platzhalter <base href="/" /> durch den Repository-Namen
-      - name: Change base-tag in index.html from / to /MyWebsite/
+      # Basispfad für GitHub Pages anpassen
+      - name: Change base-tag in index.html
         run: sed -i 's/<base href="\/" \/>/<base href="\/MyWebsite\/" \/>/g' release/wwwroot/index.html
       
-      # 5. .nojekyll-Datei hinzufügen, um zu verhindern, dass GitHub Pages Ordner mit Unterstrich ignoriert
+      # .nojekyll-Datei hinzufügen
       - name: Add .nojekyll file
         run: touch release/wwwroot/.nojekyll
 
-      # 6. Auf dem gh-pages Branch bereitstellen
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/gh-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          # Der Branch, auf dem die statischen Dateien bereitgestellt werden
-          target_branch: gh-pages
-          # Das Verzeichnis, das bereitgestellt werden soll
-          build_dir: release/wwwroot
-        env:
-          # Ein Token, das zum Pushen in den gh-pages Branch benötigt wird
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Vom "release/wwwroot"-Verzeichnis hochladen
+          path: 'release/wwwroot'
+
+  # Bereitstellungs-Job
+  deploy:
+    # Hängt vom erfolgreichen Abschluss des "build"-Jobs ab
+    needs: build
+    
+    # Berechtigungen für diesen spezifischen Job
+    permissions:
+      pages: write
+      id-token: write
+      
+    # Auf der GitHub Pages-Umgebung bereitstellen
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
