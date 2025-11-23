@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\.nojekyll\" />
     <Folder Include="wwwroot\ressorcen\" />
   </ItemGroup>
 
