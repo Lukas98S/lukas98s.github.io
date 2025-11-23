@@ -1,0 +1,45 @@
+name: Deploy to GitHub Pages
+
+# Löst den Workflow bei jedem Push in den master-Branch aus
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-to-github-pages:
+    # Führt den Job auf dem neuesten Ubuntu-Runner aus
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Code auschecken
+      - uses: actions/checkout@v4
+
+      # 2. .NET 8 SDK einrichten
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # 3. App veröffentlichen
+      - name: Publish .NET Core Project
+        run: dotnet publish MyWebsite/MyWebsite.csproj -c Release -o release --nologo
+
+      # 4. Basispfad für GitHub Pages anpassen
+      # Ersetzt den Platzhalter <base href="/" /> durch den Repository-Namen
+      - name: Change base-tag in index.html from / to /MyWebsite/
+        run: sed -i 's/<base href="\/" \/>/<base href="\/MyWebsite\/" \/>/g' release/wwwroot/index.html
+      
+      # 5. .nojekyll-Datei hinzufügen, um zu verhindern, dass GitHub Pages Ordner mit Unterstrich ignoriert
+      - name: Add .nojekyll file
+        run: touch release/wwwroot/.nojekyll
+
+      # 6. Auf dem gh-pages Branch bereitstellen
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/gh-pages@v4
+        with:
+          # Der Branch, auf dem die statischen Dateien bereitgestellt werden
+          target_branch: gh-pages
+          # Das Verzeichnis, das bereitgestellt werden soll
+          build_dir: release/wwwroot
+        env:
+          # Ein Token, das zum Pushen in den gh-pages Branch benötigt wird
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
