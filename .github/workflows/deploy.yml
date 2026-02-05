@@ -30,7 +30,7 @@ jobs:
 
       # Basispfad für GitHub Pages anpassen
       - name: Change base-tag in index.html
-        run: sed -i 's/<base href="\/" \/>/<base href="\/MyWebsite\/" \/>/g' release/wwwroot/index.html
+        run: sed -i 's/<base href="\/" \/>/<base href="\/" \/>/g' release/wwwroot/index.html
       
       # .nojekyll-Datei hinzufügen
       - name: Add .nojekyll file
