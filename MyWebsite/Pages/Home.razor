@@ -6,6 +6,12 @@
 
     @* Linke Spalte mit dem Hauptinhalt *@
     <div class="main-content">
+
+        <div class="eye-container">
+        <div class="eye-ball">
+        <div class="eye-pupil"></div>
+        <div class="eye-lid"></div> </div>
+       </div>
         <div class="hero-section">
             <h1>
                 Hallo, ich bin <span id="typewriter-output" style="color: black"></span><span class="cursor">&nbsp;</span>
@@ -141,6 +147,8 @@
         if (firstRender)
         {
             await JS.InvokeVoidAsync("typewriterEffect", "typewriter-output", "Lukas Schütz", 150);
+            await Task.Delay(500);
+            await JS.InvokeVoidAsync("initEyeTracking");
         }
     }
 }
