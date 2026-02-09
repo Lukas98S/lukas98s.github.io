@@ -1,14 +1,16 @@
 ﻿@page "/"
-
+@inject IJSRuntime JS
 <PageTitle>Startseite - Über mich</PageTitle>
 
 <div class="home-container">
 
     @* Linke Spalte mit dem Hauptinhalt *@
     <div class="main-content">
-        <h1>Willkommen auf meiner Webseite</h1>
-
-        <p>Ich bin Lukas, ein seit August 2025 ausgebildeter Fachinformatiker für Anwendungsentwicklung mit einer Leidenschaft für Softwareentwicklung und Technologie.</p>
+        <div class="hero-section">
+            <h1>
+                Hallo, ich bin <span id="typewriter-output" style="color: black"></span><span class="cursor">&nbsp;</span>
+            </h1>
+        </div>
 
         <h3>Mein Werdegang</h3>
         <p>Hier ist ein Überblick über meine schulische und berufliche Laufbahn.</p>
@@ -132,3 +134,13 @@
     </div>
 
 </div>
+
+@code{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("typewriterEffect", "typewriter-output", "Lukas Schütz", 150);
+        }
+    }
+}
