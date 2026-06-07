@@ -1,10 +1,27 @@
-﻿@page "/code"
+﻿@page "/Code"
 
 <PageTitle>Meine Projekte</PageTitle>
 
-<h1>Meine Projekte</h1>
+<h1 class="page-title">Meine Projekte</h1>
+<p class="page-description">Hier finden Sie eine auflistung meiner bisherigen Projekte in Form von Dokumentationen</p>
 
-<p>Hier finden Sie eine auflistung meiner bisherigen Projekte in Form von Dokumentationen</p>
+@*---Projektkarte: Bewerbungs-Tracker---*@
+<div class="project-card">
+    <h3>Bewerbungs-Tracker (Desktop-App)</h3>
+    <p class="tech-stack"><strong>Technologien:</strong> C#, WPF, Entity Framework, SQLite, IMAP</p>
+    <p>
+        Eine eigenverantwortlich entwickelte Desktop-Anwendung zur Verwaltung von Bewerbungsprozessen. <br />
+        Das Programm nutzt eine lokale SQLite-Datenbank zur persistenten Datenspeicherung und automatisiert Posteingangsprozesse durch eine integrierte IMAP-Schnittstelle.
+    </p>
+    <a href="https://github.com/Lukas98S/BewerbungsTracker" target="_blank" rel="noopener noreferrer" class="btn-primary">
+        Code auf GitHub ansehen
+    </a>
+</div>
 
-<h4>Abschlussprüfungsprojekt</h4>
-<a href="ressorcen/Projekt%20Dokumentation%20Lukas%20Schütz.pdf" target="_blank">Projektarbeit der Abschlussprüfung</a>
+@*---Abschlussarbeit---*@
+<h4 class="doc-title">Abschlussprüfungsprojekt</h4>
+<p>
+    <a href="ressorcen/Projekt%20Dokumentation%20Lukas%20Schütz.pdf" target="_blank" rel="noopener noreferrer" class="doc-link">
+        Projektarbeit der Abschlussprüfung
+    </a>
+</p>
